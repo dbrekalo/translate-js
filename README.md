@@ -74,7 +74,7 @@ translate.clear();
 ```javascript
 translate(key, templateData, options);
 ```
-Translates key to current locale.
+Translates string stored under specified key to current locale.
 Interpolates template string if templateData is given.
 Specific locale translation can be specified via options.locale.
 
