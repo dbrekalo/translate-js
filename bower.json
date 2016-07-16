@@ -1,0 +1,22 @@
+{
+  "name": "translate-js",
+  "version": "1.0.0",
+  "homepage": "https://github.com/dbrekalo/translate-js",
+  "author": "Damir Brekalo <dbrekalo@gmail.com>",
+  "description": "registry for managing localization and translations",
+  "main": "src/translate.js",
+  "keywords": [
+    "locale",
+    "Language",
+    "translate",
+    "translations"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
