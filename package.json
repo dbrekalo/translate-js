@@ -1,6 +1,6 @@
 {
   "name": "translate-js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "manage translations and localization with simple api",
   "main": "src/translate.js",
   "license": "MIT",
@@ -16,6 +16,9 @@
     "translations"
   ],
   "scripts": {
+    "bump:patch": "grunt bump:patch",
+    "bump:minor": "grunt bump:minor",
+    "bump:major": "grunt bump:major",
     "build": "npm test && grunt build",
     "watch": "grunt build && grunt watch",
     "test": "mocha --reporter spec",
