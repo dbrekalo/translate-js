@@ -1,18 +1,17 @@
-#Translate JS
+# Translate JS
 [![Build Status](https://travis-ci.org/dbrekalo/translate-js.svg?branch=master)](https://travis-ci.org/dbrekalo/translate-js)
 [![Coverage Status](https://coveralls.io/repos/github/dbrekalo/translate-js/badge.svg?branch=master)](https://coveralls.io/github/dbrekalo/translate-js?branch=master)
 [![NPM Status](https://img.shields.io/npm/v/translate-js.svg?style=flat)](https://www.npmjs.com/package/translate-js)
 
-Small library for managing translations and localization with simple api. Works client and server side. Less then 1KB.
+Lightweight library for managing translations and localization with simple api. Works client and server side. Less then 1KB.
 
-##Installation
+## Installation
 ```sh
 npm install translate-js --save
-bower install translate-js --save
 ```
 
-##Basic usage
-```javascript
+## Basic usage
+```js
 // add items to translate registry
 translate.add({
     projectTitle: 'Project title',
@@ -34,8 +33,8 @@ translate('button.caption'); // outputs  "Please click me!"
 translate('deep.nested.label'); // outputs  "Deep nested label"
 ```
 
-##Advanced usage
-```javascript
+## Advanced usage
+```js
 // add items to specific locale
 translate.add({projectTitle: 'Project title'}, 'en');
 translate.add({projectTitle: 'Título del Proyecto'}, 'es');
@@ -68,49 +67,49 @@ translate('welcomeMessage', {userName: 'George'}); // outputs "Hello George"
 // clear / empty translate registry
 translate.clear();
 ```
-##API
+## API
 
-##translate
-```javascript
+## translate
+```js
 translate(key, templateData, options);
 ```
 Translates string stored under specified key to current locale.
 Interpolates template string if templateData is given.
 Specific locale translation can be specified via options.locale.
 
-##translate.add
-```javascript
+## translate.add
+```js
 translate.add(items, locale, keyPrefix);
 ```
 Imports items (plain or nested object) to translate registry under specific locale (defaults to "en").
 Prefix on item keys can optionally be added as keyPrefix parameter;
 
-##translate.setLocale
-```javascript
+## translate.setLocale
+```js
 translate.setLocale(locale);
 ```
 Sets current locale for future translate calls.
 
-##translate.getLocale
-```javascript
+## translate.getLocale
+```js
 translate.getLocale();
 ```
 Gets current locale
 
-##translate.interpolateWith
-```javascript
+## translate.interpolateWith
+```js
 translate.interpolateWith(interpolateRE);
 ```
 Sets regular expression for template strings interpolation.
 
-##translate.whenUndefined
-```javascript
+## translate.whenUndefined
+```js
 translate.whenUndefined = function(key, locale) {};
 ```
 Define custom handler for use case when requested item is not in registry.
 
-##translate.clear
-```javascript
+## translate.clear
+```js
 translate.clear();
 ```
 clear / empty all items in translate registry
