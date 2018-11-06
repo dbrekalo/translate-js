@@ -97,6 +97,7 @@ describe('translate', function() {
         assert.equal(translate('welcomeMessage', {userName: 'George'}), 'Hello George');
         assert.equal(translate('welcomeMessage', {}), 'Hello {{userName}}');
         assert.equal(translate('taskCounterMessage', {taskCounter: 4, userName: 'George'}), '4 tasks left George');
+        assert.equal(translate('taskCounterMessage', {taskCounter: 0, userName: 'George'}), '0 tasks left George');
 
     });
 

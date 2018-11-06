@@ -33,7 +33,7 @@
             return translate.whenUndefined(key, locale);
         } else {
             return templateData ? translation.replace(interpolateRE, function(match, param) {
-                return templateData[param] || match;
+                return templateData.hasOwnProperty(param) ? templateData[param] : match;
             }) : translation;
         }
 
