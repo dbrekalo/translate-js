@@ -33,7 +33,7 @@
             return translate.whenUndefined(key, locale);
         } else {
             return templateData ? translation.replace(interpolateRE, function(match, param) {
-                return templateData[param] || match;
+                return templateData.hasOwnProperty(param) ? templateData[param] : match;
             }) : translation;
         }
 
@@ -42,14 +42,14 @@
     translate.add = function(items, locale, prefix) {
 
         locale = locale || currentLocale;
-        prefix = prefix || '';
         registry[locale] = registry[locale] || {};
 
         each(items, function(key, value) {
 
             var registryKey = prefix ? prefix + '.' + key : key;
+            var valueType = typeof value;
 
-            if (typeof value === 'string' || typeof value === 'number') {
+            if (valueType === 'string' || valueType === 'number') {
                 registry[locale][registryKey] = value;
             } else {
                 translate.add(value, locale, registryKey);
