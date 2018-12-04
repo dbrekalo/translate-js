@@ -16,7 +16,7 @@ npm install translate-js --save
 translate.add({
     projectTitle: 'Project title',
     button: {
-        text: 'Click me {{userName}}!',
+        text: 'Click me {{ userName }}!',
         caption: 'Please click me!'
     },
     deep: {
@@ -66,6 +66,9 @@ translate('welcomeMessage', {userName: 'George'}); // outputs "Hello George"
 
 // clear / empty translate registry
 translate.clear();
+
+// create new translate registry
+translate.createRegistry();
 ```
 ## API
 
@@ -113,3 +116,9 @@ Define custom handler for use case when requested item is not in registry.
 translate.clear();
 ```
 clear / empty all items in translate registry
+
+## translate.createRegistry
+```js
+translate.createRegistry();
+```
+Creates new isolated translate registry

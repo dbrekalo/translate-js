@@ -11,89 +11,101 @@
 
 }(this, function() {
 
-    var registry = {};
-    var currentLocale = 'en';
-    var interpolateRE = /{{(\w+)}}/g;
+    function createRegistry() {
 
-    function each(storage, callback) {
+        var registry = {};
+        var currentLocale = 'en';
+        var interpolateRE = /{{\s*(\w+)\s*}}/g;
 
-        for (var key in storage) {
-            storage.hasOwnProperty(key) && callback(key, storage[key]);
-        }
+        function each(storage, callback) {
 
-    }
-
-    function translate(key, templateData, options) {
-
-        options = options || {};
-        var locale = options.locale || currentLocale;
-        var translation =  registry[locale] && registry[locale][key];
-
-        if (typeof translation === 'undefined') {
-            return translate.whenUndefined(key, locale);
-        } else {
-            return templateData ? translation.replace(interpolateRE, function(match, param) {
-                return templateData.hasOwnProperty(param) ? templateData[param] : match;
-            }) : translation;
-        }
-
-    }
-
-    translate.add = function(items, locale, prefix) {
-
-        locale = locale || currentLocale;
-        registry[locale] = registry[locale] || {};
-
-        each(items, function(key, value) {
-
-            var registryKey = prefix ? prefix + '.' + key : key;
-            var valueType = typeof value;
-
-            if (valueType === 'string' || valueType === 'number') {
-                registry[locale][registryKey] = value;
-            } else {
-                translate.add(value, locale, registryKey);
+            for (var key in storage) {
+                storage.hasOwnProperty(key) && callback(key, storage[key]);
             }
 
-        });
+        }
 
-        return this;
+        function translate(key, templateData, options) {
 
-    };
+            options = options || {};
+            var locale = options.locale || currentLocale;
+            var translation =  registry[locale] && registry[locale][key];
 
-    translate.setLocale = function(locale) {
+            if (typeof translation === 'undefined') {
+                return translate.whenUndefined(key, locale);
+            } else {
+                return templateData ? translation.replace(interpolateRE, function(match, param) {
+                    return templateData.hasOwnProperty(param) ? templateData[param] : match;
+                }) : translation;
+            }
 
-        currentLocale = locale;
-        return this;
+        }
 
-    };
+        translate.add = function(items, locale, prefix) {
 
-    translate.getLocale = function() {
+            locale = locale || currentLocale;
+            registry[locale] = registry[locale] || {};
 
-        return currentLocale;
+            each(items, function(key, value) {
 
-    };
+                var registryKey = prefix ? prefix + '.' + key : key;
+                var valueType = typeof value;
 
-    translate.interpolateWith = function(userRE) {
+                if (valueType === 'string' || valueType === 'number') {
+                    registry[locale][registryKey] = value;
+                } else {
+                    translate.add(value, locale, registryKey);
+                }
 
-        interpolateRE = userRE;
-        return this;
+            });
 
-    };
+            return this;
 
-    translate.whenUndefined = function(key, locale) {
+        };
 
-        return key;
+        translate.setLocale = function(locale) {
 
-    };
+            currentLocale = locale;
+            return this;
 
-    translate.clear = function() {
+        };
 
-        registry = {};
-        return this;
+        translate.getLocale = function() {
 
-    };
+            return currentLocale;
 
-    return translate;
+        };
+
+        translate.interpolateWith = function(userRE) {
+
+            interpolateRE = userRE;
+            return this;
+
+        };
+
+        translate.whenUndefined = function(key, locale) {
+
+            return key;
+
+        };
+
+        translate.clear = function() {
+
+            registry = {};
+            return this;
+
+        };
+
+        translate.createRegistry = function() {
+
+            return createRegistry();
+
+        };
+
+        return translate;
+
+    }
+
+    return createRegistry();
 
 }));

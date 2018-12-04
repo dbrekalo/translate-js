@@ -1,16 +1,9 @@
 var assert = require('chai').assert;
-var translate = require('../');
+var translateLib = require('../');
+var translate;
 
 beforeEach(function() {
-    translate.clear();
-});
-
-after(function() {
-    translate.clear();
-    translate.interpolateWith(/{{(\w+)}}/g);
-    translate.whenUndefined = function(key) {
-        return key;
-    };
+    translate = translateLib.createRegistry();
 });
 
 describe('translate', function() {
@@ -25,7 +18,6 @@ describe('translate', function() {
 
         translate.setLocale('hr');
         assert.equal(translate.getLocale(), 'hr');
-        translate.setLocale('en');
 
     });
 
@@ -81,21 +73,17 @@ describe('translate', function() {
 
         assert.equal(translate('title'), 'title:undefined');
 
-        translate.whenUndefined = function(key) {
-            return key;
-        };
-
     });
 
     it('will parse template with user data', function() {
 
         translate.add({
-            welcomeMessage: 'Hello {{userName}}',
-            taskCounterMessage: '{{taskCounter}} tasks left {{userName}}'
+            welcomeMessage: 'Hello {{ userName }}',
+            taskCounterMessage: '{{taskCounter}} tasks left {{userName }}'
         });
 
         assert.equal(translate('welcomeMessage', {userName: 'George'}), 'Hello George');
-        assert.equal(translate('welcomeMessage', {}), 'Hello {{userName}}');
+        assert.equal(translate('welcomeMessage', {}), 'Hello {{ userName }}');
         assert.equal(translate('taskCounterMessage', {taskCounter: 4, userName: 'George'}), '4 tasks left George');
         assert.equal(translate('taskCounterMessage', {taskCounter: 0, userName: 'George'}), '0 tasks left George');
 
