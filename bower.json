@@ -1,6 +1,6 @@
 {
   "name": "translate-js",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "homepage": "https://github.com/dbrekalo/translate-js",
   "author": "Damir Brekalo <dbrekalo@gmail.com>",
   "description": "registry for managing localization and translations",
