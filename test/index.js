@@ -89,6 +89,83 @@ describe('translate', function() {
 
     });
 
+    it('will pluralize english translations', function() {
+
+        translate.add({
+            items: [
+                '{{ itemCount }} item',
+                '{{ itemCount }} items'
+            ],
+            basketItems: [
+                '{{ count }} item in {{ size }} basket',
+                '{{ count }} items in {{ size }} basket'
+            ],
+            accountCoins: [
+                '{{ coinCount }} coin in {{ account }} account',
+                '{{ coinCount }} coins in {{ account }} account'
+            ]
+        });
+
+        assert.equal(translate('items', {itemCount: 1}), '1 item');
+        assert.equal(translate('items', {itemCount: 2}), '2 items');
+        assert.equal(translate('items', {itemCount: '1'}), '1 item');
+        assert.equal(translate('items', {itemCount: '2'}), '2 items');
+        assert.equal(translate('items', {itemCount: '15.5'}), '15.5 items');
+
+        assert.equal(translate('basketItems', {count: 1, size: 'big'}), '1 item in big basket');
+        assert.equal(translate('basketItems', {count: 2, size: 'small'}), '2 items in small basket');
+
+        assert.equal(
+            translate('accountCoins', {coinCount: 1, account: 'domestic'}, {pluralizeTo: 'coinCount'}),
+             '1 coin in domestic account'
+        );
+        assert.equal(
+            translate('accountCoins', {coinCount: 2, account: 'foreign'}, {pluralizeTo: 'coinCount'}),
+            '2 coins in foreign account'
+        );
+
+        assert.throws(() => translate('accountCoins', {coinCount: 2, account: 'foreign'}));
+        assert.throws(() => translate('items'));
+        assert.throws(() => translate('basketItems'));
+
+    });
+
+    it('allows extending pluralization rules', function() {
+
+        translate.setPluralizationRule('hr', $number => {
+            // https://github.com/symfony/translation/blob/master/PluralizationRules.php#L156
+            return ((1 == $number % 10) && (11 != $number % 100)) ? 0 : ((($number % 10 >= 2) && ($number % 10 <= 4) && (($number % 100 < 10) || ($number % 100 >= 20))) ? 1 : 2);
+        }, {pluralizeTo: 'count'});
+
+        translate.setLocale('hr').add({
+            balls: [
+                '{{ count }} lopta',
+                '{{ count }} lopte',
+                '{{ count }} lopti'
+            ],
+            minutes: [
+                '{{ count }} minuta',
+                '{{ count }} minute',
+                '{{ count }} minuta'
+            ]
+        });
+
+        assert.equal(translate('balls', {count: 1}), '1 lopta');
+        assert.equal(translate('balls', {count: 2}), '2 lopte');
+        assert.equal(translate('balls', {count: 5}), '5 lopti');
+
+        assert.equal(translate('minutes', {count: 1}), '1 minuta');
+        assert.equal(translate('minutes', {count: 2}), '2 minute');
+        assert.equal(translate('minutes', {count: 5}), '5 minuta');
+        assert.equal(translate('minutes', {count: 6}), '6 minuta');
+        assert.equal(translate('minutes', {count: 12}), '12 minuta');
+        assert.equal(translate('minutes', {count: 18}), '18 minuta');
+        assert.equal(translate('minutes', {count: 22}), '22 minute');
+        assert.equal(translate('minutes', {count: 28}), '28 minuta');
+        assert.equal(translate('minutes', {count: 1328}), '1328 minuta');
+
+    });
+
     it('will parse template with custom user interpolate RE', function() {
 
         translate.add({welcomeMessage: 'Hello $userName'});
