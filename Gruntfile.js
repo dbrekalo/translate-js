@@ -1,10 +1,6 @@
-/* jshint node: true */
 module.exports = function(grunt) {
 
     grunt.initConfig({
-
-        npmPackage: grunt.file.readJSON('package.json'),
-        bowerPackage: grunt.file.readJSON('bower.json'),
 
         uglify: {
             min: {
@@ -14,10 +10,7 @@ module.exports = function(grunt) {
                     src: '**/*.js',
                     dest: 'dist',
                     ext: '.min.js'
-                }],
-                options: {
-
-                }
+                }]
             }
         },
 
@@ -32,47 +25,39 @@ module.exports = function(grunt) {
             }
         },
 
-        jshint: {
+        eslint: {
             options: {
-                'jshintrc': '.jshintrc'
+                configFile: '.eslintrc.js'
             },
-            all: ['src', 'Gruntfile.js', 'test/**/*.js']
-        },
-
-        jscs: {
-            options: {
-                config: '.jscsrc'
-            },
-            scripts: {
-                files: {
-                    src: ['src/**/*.js', 'test/**/*.js', 'Gruntfile.js']
-                }
-            }
+            target: [
+                ['src/**/*.js'],
+                'Gruntfile.js'
+            ]
         },
 
         watch: {
             jsFiles: {
                 expand: true,
-                files: ['src/**/*.js', 'Gruntfile.js'],
-                tasks: ['jshint', 'jscs', 'copy', 'uglify'],
+                files: ['src/**/*.js'],
+                tasks: ['eslint', 'uglify', 'copy'],
                 options: {
                     spawn: false
                 }
             },
-            testFiles: {
+            readme: {
                 expand: true,
-                files: ['test/**/*.js'],
-                tasks: ['jshint', 'jscs'],
+                files: ['README.md'],
+                tasks: ['buildDemo'],
                 options: {
                     spawn: false
                 }
-            }
+            },
         },
 
         bump: {
             options: {
-                files: ['package.json', 'bower.json'],
-                commitFiles: ['package.json', 'bower.json'],
+                files: ['package.json'],
+                commitFiles: ['package.json'],
                 tagName: '%VERSION%',
                 push: false
             }
@@ -82,7 +67,7 @@ module.exports = function(grunt) {
 
     require('load-grunt-tasks')(grunt);
 
-    grunt.registerTask('default', ['watch']);
-    grunt.registerTask('build', ['jshint', 'jscs', 'uglify', 'copy']);
+    grunt.registerTask('default', ['build', 'watch']);
+    grunt.registerTask('build', ['eslint', 'uglify', 'copy']);
 
 };

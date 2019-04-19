@@ -11,33 +11,67 @@
 
 }(this, function() {
 
+    function each(storage, callback) {
+        for (var key in storage) {
+            storage.hasOwnProperty(key) && callback(key, storage[key]);
+        }
+    }
+
     function createRegistry() {
 
         var registry = {};
         var currentLocale = 'en';
         var interpolateRE = /{{\s*(\w+)\s*}}/g;
-
-        function each(storage, callback) {
-
-            for (var key in storage) {
-                storage.hasOwnProperty(key) && callback(key, storage[key]);
+        var pluralizationRules = {
+            en: {
+                pluralizeTo: 'count',
+                getVariationIndex: function(count) {
+                    return (1 === count) ? 0 : 1;
+                }
             }
-
-        }
+        };
 
         function translate(key, templateData, options) {
 
             options = options || {};
             var locale = options.locale || currentLocale;
-            var translation =  registry[locale] && registry[locale][key];
+            var translation = registry[locale] && registry[locale][key];
 
             if (typeof translation === 'undefined') {
                 return translate.whenUndefined(key, locale);
+            } else if (Array.isArray(translation)) {
+                return translatePlural(
+                    key, translation, templateData, locale, options.pluralizeTo
+                );
             } else {
-                return templateData ? translation.replace(interpolateRE, function(match, param) {
-                    return templateData.hasOwnProperty(param) ? templateData[param] : match;
-                }) : translation;
+                return interpolate(translation, templateData);
             }
+
+        }
+
+        function translatePlural(key, variations, data, locale, pluralizeTo) {
+
+            var rule = pluralizationRules[locale];
+            var dataKeys = Object.keys(data);
+            var pluralizeKey = dataKeys.length === 1
+                ? dataKeys[0]
+                : (pluralizeTo || rule.pluralizeTo)
+            ;
+            var count = parseFloat(data[pluralizeKey]);
+
+            if (isNaN(count)) {
+                throw new Error('Tranlation pluralization missing parameters on key "' + key + '"');
+            } else {
+                return interpolate(variations[rule.getVariationIndex(count)], data);
+            }
+
+        }
+
+        function interpolate(translationString, data) {
+
+            return data ? translationString.replace(interpolateRE, function(match, param) {
+                return data.hasOwnProperty(param) ? data[param] : match;
+            }) : translationString;
 
         }
 
@@ -51,7 +85,7 @@
                 var registryKey = prefix ? prefix + '.' + key : key;
                 var valueType = typeof value;
 
-                if (valueType === 'string' || valueType === 'number') {
+                if (Array.isArray(value) || valueType === 'string' || valueType === 'number') {
                     registry[locale][registryKey] = value;
                 } else {
                     translate.add(value, locale, registryKey);
@@ -79,6 +113,16 @@
         translate.interpolateWith = function(userRE) {
 
             interpolateRE = userRE;
+            return this;
+
+        };
+
+        translate.setPluralizationRule = function(locale, rule, options) {
+
+            pluralizationRules[locale] = {
+                pluralizeTo: options && options.pluralizeTo || 'count',
+                getVariationIndex: rule
+            };
             return this;
 
         };
