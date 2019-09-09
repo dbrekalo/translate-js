@@ -34,8 +34,10 @@
         function translate(key, templateData, options) {
 
             options = options || {};
+
             var locale = options.locale || currentLocale;
-            var translation = registry[locale] && registry[locale][key];
+            var store = options.registry || registry;
+            var translation = store[locale] && store[locale][key];
 
             if (typeof translation === 'undefined') {
                 return translate.whenUndefined(key, locale);

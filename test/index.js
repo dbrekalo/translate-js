@@ -51,6 +51,15 @@ describe('translate', function() {
 
     });
 
+    it('will translate from custom registry and locale', function() {
+
+        assert.equal(translate('foo', null, {
+            locale: 'en',
+            registry: {en: {foo: 'bar'}}
+        }), 'bar');
+
+    });
+
     it('will empty registry when clear is called', function() {
 
         translate.add({title: 'Test title'});
